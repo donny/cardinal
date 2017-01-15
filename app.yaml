@@ -6,8 +6,11 @@ libraries:
 - name: lxml
   version: "2.3.5"
 
+inbound_services:
+- mail
+
 handlers:
-- url: /_ah/mail/.+
+- url: /_ah/mail/info@fiftytwo-cardinal\.appspotmail\.com
   script: email_handler.app
 - url: /.*
   script: main.app
