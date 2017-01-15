@@ -1,13 +1,12 @@
-import pytest
+import webtest
+
+import main
 
 
-@pytest.fixture
-def app():
-    import main
-    main.app.testing = True
-    return main.app.test_client()
+def test_get():
+    app = webtest.TestApp(main.app)
 
+    response = app.get('/')
 
-def test_index(app):
-    r = app.get('/')
-    assert r.status_code == 200
+    assert response.status_int == 200
+    assert response.body == 'Hello, World!'
