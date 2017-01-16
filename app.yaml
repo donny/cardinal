@@ -12,5 +12,7 @@ inbound_services:
 handlers:
 - url: /_ah/mail/info@fiftytwo-cardinal\.appspotmail\.com
   script: email_handler.app
+- url: /fetch
+  script: fetch.app
 - url: /.*
   script: main.app

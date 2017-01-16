@@ -1,0 +1,4 @@
+cron:
+- url: /fetch
+  timezone: Australia/Melbourne
+  schedule: every 2 hours from 06:00 to 23:00
