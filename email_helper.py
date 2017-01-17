@@ -9,3 +9,12 @@ Send an email to {} with any of the following subject line:
 
 Thanks
 """.format(SENDER)
+
+LIST_MESSAGE = """Dear user,
+
+You have subscribed to the following keywords:
+
+{}
+
+Thanks
+"""
