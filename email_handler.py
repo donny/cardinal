@@ -28,7 +28,7 @@ class EmailHandler(InboundMailHandler):
             else:
                 keywords.pop(0)  # To remove 'subscribe'.
                 person = Person.get_or_insert(sender)
-                if person.email == sender: # Check whether it's new or not.
+                if person.email == sender: # Check whether it exists or not.
                     keywords.extend(person.keywords)
                     keywords = list(set(keywords)) # To remove duplicates.
                     person.keywords = keywords
@@ -36,6 +36,15 @@ class EmailHandler(InboundMailHandler):
                     person.email = sender
                     person.keywords = keywords
                 person.put()
+                message.body = email_helper.LIST_MESSAGE.format(' '.join(keywords))
+
+        elif subject.startswith('list'):
+            sender = mail_message.sender
+            person = Person.get_by_id(sender)
+            if person == None: # Check whether it exists or not.
+                message.body = email_helper.HELP_MESSAGE
+            else:
+                keywords = person.keywords
                 message.body = email_helper.LIST_MESSAGE.format(' '.join(keywords))
 
         elif subject.startswith('help'):
