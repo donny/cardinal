@@ -9,33 +9,27 @@ class Fetch(webapp2.RequestHandler):
 
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
-        self.response.write('Hello, World!')
 
         url = 'https://www.ozbargain.com.au/deals/feed'
         try:
             result = urlfetch.fetch(url, validate_certificate=True)
             if result.status_code == 200:
-                data = result.content
-                soup = BeautifulSoup(data, 'xml')
+                soup = BeautifulSoup(result.content, 'xml')
                 items = soup.findAll('item')
                 for item in items:
                     title = item.title.text.encode('utf-8')
                     link = item.link.text.encode('utf-8')
                     description = item.description.text.encode('utf-8')
 
-                    deal = Deal(title=title, link=link, description=description)
+                    deal = Deal(key_name=link, title=title, link=link, description=description)
                     deal.put()
 
-                    logging.info(title)
-                    logging.info(description)
-                    logging.info(link)
-
-                self.response.write(str(result.status_code))
+                self.response.write('OK')
             else:
-                self.response.write(str(result.status_code))
+                self.response.write('ERROR')
         except urlfetch.Error:
-            logging.exception('Caught exception fetching url')
-            self.response.write("ERROR")
+            logging.exception('Caught exception fetching data')
+            self.response.write('EXCEPTION')
 
 app = webapp2.WSGIApplication([
     ('/fetch', Fetch),
