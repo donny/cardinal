@@ -5,3 +5,7 @@ class Deal(ndb.Model):
     link = ndb.StringProperty()
     description = ndb.TextProperty()
     date = ndb.DateTimeProperty(auto_now_add=True)
+
+class Person(ndb.Model):
+    email = ndb.StringProperty()
+    keywords = ndb.StringProperty(repeated=True)
