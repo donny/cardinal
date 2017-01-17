@@ -21,7 +21,8 @@ class Fetch(webapp2.RequestHandler):
                     link = item.link.text.encode('utf-8')
                     description = item.description.text.encode('utf-8')
 
-                    deal = Deal(id=link, title=title, link=link, description=description)
+                    deal = Deal(id=link, title=title, link=link,
+                                description=description)
                     deal.put()
 
                 self.response.write('OK')
