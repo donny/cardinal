@@ -26,9 +26,15 @@ class EmailHandler(InboundMailHandler):
             if len(keywords) <= 1:
                 message.body = email_helper.HELP_MESSAGE
             else:
-                keywords.pop(0)  # To remove 'subscribe'
-                person = Person(id=sender, email=sender,
-                                keywords=keywords)
+                keywords.pop(0)  # To remove 'subscribe'.
+                person = Person.get_or_insert(sender)
+                if person.email == sender: # Check whether it's new or not.
+                    keywords.extend(person.keywords)
+                    keywords = list(set(keywords)) # To remove duplicates.
+                    person.keywords = keywords
+                else:
+                    person.email = sender
+                    person.keywords = keywords
                 person.put()
 
         elif subject.startswith('help'):
