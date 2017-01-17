@@ -36,7 +36,7 @@ class EmailHandler(InboundMailHandler):
                     person.email = sender
                     person.keywords = keywords
                 person.put()
-                message.body = email_helper.LIST_MESSAGE.format(keywords)
+                message.body = email_helper.LIST_MESSAGE.format(' '.join(keywords))
 
         elif subject.startswith('help'):
             message.body = email_helper.HELP_MESSAGE
