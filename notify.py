@@ -11,7 +11,7 @@ class Notify(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'text/plain'
 
         people = Person.query().fetch()
-        new_deals = Deal.filter(Deal.new == True).fetch()
+        new_deals = Deal.query(Deal.new == True).fetch()
 
         new_emails = {}
 
