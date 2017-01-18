@@ -5,15 +5,16 @@ from bs4 import BeautifulSoup
 from google.appengine.api import urlfetch
 from model import Deal
 
+FEED_URL = 'https://www.ozbargain.com.au/deals/feed'
+
 
 class Fetch(webapp2.RequestHandler):
 
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
 
-        url = 'https://www.ozbargain.com.au/deals/feed'
         try:
-            result = urlfetch.fetch(url, validate_certificate=True)
+            result = urlfetch.fetch(FEED_URL, validate_certificate=True)
             if result.status_code == 200:
                 soup = BeautifulSoup(result.content, 'xml')
                 items = soup.findAll('item')
