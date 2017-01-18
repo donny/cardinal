@@ -1,9 +1,8 @@
 import logging
 import webapp2
-import re
-from bs4 import BeautifulSoup
-from google.appengine.api import urlfetch
-from model import Deal
+from model import Deal, Person
+from google.appengine.api import mail
+import email_helper
 
 
 class Notify(webapp2.RequestHandler):
@@ -11,32 +10,32 @@ class Notify(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/plain'
 
-        url = 'https://www.ozbargain.com.au/deals/feed'
+        people = Person.query().fetch()
+        new_deals = Deal.filter(Deal.new == True).fetch()
+
+        new_emails = {}
+
         try:
-            result = urlfetch.fetch(url, validate_certificate=True)
-            if result.status_code == 200:
-                soup = BeautifulSoup(result.content, 'xml')
-                items = soup.findAll('item')
-                for item in items:
-                    link = item.link.text.encode('utf-8')
-                    title = item.title.text.encode('utf-8')
-                    description = item.description.text.encode('utf-8')
+            for person in people:
+                for new_deal in new_deals:
+                    intersect = set(new_deal.keywords) & set(person.keywords)
+                    if len(intersect) != 0:
+                        if person.email not in new_emails:
+                            new_emails[person.email] = []
+                        new_emails[person.email].append(new_deal)
 
-                    deal = Deal.get_by_id(link)
-                    if deal == None:
-                        deal = Deal(id=link, link=link, title=title,
-                                    description=description)
-                        keywords = re.sub(r'\W+', ' ', title)
-                        keywords = keywords.split(' ')
-                        # To remove empty strings.
-                        keywords = filter(None, keywords)
-                        keywords = list(set(keywords))  # To remove duplicates.
-                        deal.keywords = keywords
-                        deal.put()
+            for new_deal in new_deals:
+                new_deal.new = False
+                new_deal.put()
 
-                self.response.write('OK')
-            else:
-                self.response.write('ERROR')
+            for email, deals in new_emails.iteritems():
+                message = mail.EmailMessage(subject='New Deals',
+                                            sender=email_helper.SENDER)
+                message.to = email
+                message.body = email_helper.NEW_DEALS_MESSAGE.format(deals)
+                message.send()
+
+            self.response.write('OK')
         except urlfetch.Error:
             logging.exception('Caught exception fetching data')
             self.response.write('EXCEPTION')

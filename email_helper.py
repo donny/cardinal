@@ -25,3 +25,12 @@ You have been removed from this service.
 
 Thanks
 """
+
+NEW_DEALS_MESSAGE = """Dear user,
+
+You have new deals:
+
+{}
+
+Thanks
+"""
