@@ -26,7 +26,7 @@ class Fetch(webapp2.RequestHandler):
                     deal = Deal.get_by_id(link)
                     if deal == None:
                         deal = Deal(id=link, link=link, title=title,
-                                    description=description)
+                                    description=description, new=True)
                         keywords = re.sub(r'\W+', ' ', title)
                         keywords = keywords.split(' ')
                         # To remove empty strings.

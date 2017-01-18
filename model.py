@@ -5,6 +5,7 @@ class Deal(ndb.Model):
     title = ndb.StringProperty()
     description = ndb.TextProperty()
     keywords = ndb.StringProperty(repeated=True)
+    new = ndb.BooleanProperty()
     date = ndb.DateTimeProperty(auto_now_add=True)
 
 class Person(ndb.Model):
