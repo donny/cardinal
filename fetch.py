@@ -28,6 +28,9 @@ class Fetch(webapp2.RequestHandler):
                                     description=description)
                         keywords = re.sub(r'\W+', ' ', title)
                         keywords = keywords.split(' ')
+                        # To remove empty strings.
+                        keywords = filter(None, keywords)
+                        keywords = list(set(keywords))  # To remove duplicates.
                         deal.keywords = keywords
                         deal.put()
 

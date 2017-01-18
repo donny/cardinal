@@ -28,15 +28,16 @@ class EmailHandler(InboundMailHandler):
                 message.body = email_helper.HELP_MESSAGE
             else:
                 keywords.pop(0)  # To remove 'subscribe'.
-                if person == None: # Check whether it exists or not.
+                if person == None:  # Check whether it exists or not.
                     person = Person(id=sender, email=sender,
                                     keywords=keywords)
                 else:
                     keywords.extend(person.keywords)
-                    keywords = list(set(keywords)) # To remove duplicates.
+                    keywords = list(set(keywords))  # To remove duplicates.
                     person.keywords = keywords
                 person.put()
-                message.body = email_helper.LIST_MESSAGE.format(' '.join(keywords))
+                message.body = email_helper.LIST_MESSAGE.format(
+                    ' '.join(keywords))
 
         elif subject.startswith('unsubscribe'):
             keywords = re.sub(r'\W+', ' ', subject)
@@ -45,7 +46,7 @@ class EmailHandler(InboundMailHandler):
                 message.body = email_helper.HELP_MESSAGE
             else:
                 keywords.pop(0)  # To remove 'unsubscribe'.
-                if person == None: # Check whether it exists or not.
+                if person == None:  # Check whether it exists or not.
                     message.body = email_helper.HELP_MESSAGE
                 else:
                     # Set operation to remove keywords.
@@ -53,17 +54,19 @@ class EmailHandler(InboundMailHandler):
                     keywords = list(keywords_set)
                     person.keywords = keywords
                     person.put()
-                    message.body = email_helper.LIST_MESSAGE.format(' '.join(keywords))
+                    message.body = email_helper.LIST_MESSAGE.format(
+                        ' '.join(keywords))
 
         elif subject.startswith('list'):
-            if person == None: # Check whether it exists or not.
+            if person == None:  # Check whether it exists or not.
                 message.body = email_helper.HELP_MESSAGE
             else:
                 keywords = person.keywords
-                message.body = email_helper.LIST_MESSAGE.format(' '.join(keywords))
+                message.body = email_helper.LIST_MESSAGE.format(
+                    ' '.join(keywords))
 
         elif subject.startswith('remove'):
-            if person == None: # Check whether it exists or not.
+            if person == None:  # Check whether it exists or not.
                 message.body = email_helper.HELP_MESSAGE
             else:
                 person.key.delete()
