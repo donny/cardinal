@@ -1,5 +1,6 @@
 import logging
 import webapp2
+import re
 from bs4 import BeautifulSoup
 from google.appengine.api import urlfetch
 from model import Deal
@@ -17,13 +18,18 @@ class Fetch(webapp2.RequestHandler):
                 soup = BeautifulSoup(result.content, 'xml')
                 items = soup.findAll('item')
                 for item in items:
-                    title = item.title.text.encode('utf-8')
                     link = item.link.text.encode('utf-8')
+                    title = item.title.text.encode('utf-8')
                     description = item.description.text.encode('utf-8')
 
-                    deal = Deal(id=link, title=title, link=link,
-                                description=description)
-                    deal.put()
+                    deal = Deal.get_by_id(link)
+                    if deal == None:
+                        deal = Deal(id=link, link=link, title=title,
+                                    description=description)
+                        keywords = re.sub(r'\W+', ' ', title)
+                        keywords = keywords.split(' ')
+                        deal.keywords = keywords
+                        deal.put()
 
                 self.response.write('OK')
             else:
