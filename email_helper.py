@@ -18,3 +18,10 @@ You have subscribed to the following keywords:
 
 Thanks
 """
+
+REMOVE_MESSAGE = """Dear user,
+
+You have been removed from this service.
+
+Thanks
+"""
