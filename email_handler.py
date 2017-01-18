@@ -18,16 +18,16 @@ class EmailHandler(InboundMailHandler):
         message.to = mail_message.sender
 
         subject = mail_message.subject.lower()
+        sender = mail_message.sender
+        person = Person.get_by_id(sender)
 
         if subject.startswith('subscribe'):
-            sender = mail_message.sender
             keywords = re.sub(r'\W+', ' ', subject)
             keywords = keywords.split(' ')
             if len(keywords) <= 1:
                 message.body = email_helper.HELP_MESSAGE
             else:
                 keywords.pop(0)  # To remove 'subscribe'.
-                person = Person.get_by_id(sender)
                 if person == None: # Check whether it exists or not.
                     person = Person(id=sender, email=sender,
                                     keywords=keywords)
@@ -39,8 +39,6 @@ class EmailHandler(InboundMailHandler):
                 message.body = email_helper.LIST_MESSAGE.format(' '.join(keywords))
 
         elif subject.startswith('list'):
-            sender = mail_message.sender
-            person = Person.get_by_id(sender)
             if person == None: # Check whether it exists or not.
                 message.body = email_helper.HELP_MESSAGE
             else:
@@ -48,8 +46,6 @@ class EmailHandler(InboundMailHandler):
                 message.body = email_helper.LIST_MESSAGE.format(' '.join(keywords))
 
         elif subject.startswith('remove'):
-            sender = mail_message.sender
-            person = Person.get_by_id(sender)
             if person == None: # Check whether it exists or not.
                 message.body = email_helper.HELP_MESSAGE
             else:
