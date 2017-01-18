@@ -38,6 +38,23 @@ class EmailHandler(InboundMailHandler):
                 person.put()
                 message.body = email_helper.LIST_MESSAGE.format(' '.join(keywords))
 
+        elif subject.startswith('unsubscribe'):
+            keywords = re.sub(r'\W+', ' ', subject)
+            keywords = keywords.split(' ')
+            if len(keywords) <= 1:
+                message.body = email_helper.HELP_MESSAGE
+            else:
+                keywords.pop(0)  # To remove 'unsubscribe'.
+                if person == None: # Check whether it exists or not.
+                    message.body = email_helper.HELP_MESSAGE
+                else:
+                    # Set operation to remove keywords.
+                    keywords_set = set(person.keywords) - set(keywords)
+                    keywords = list(keywords_set)
+                    person.keywords = keywords
+                    person.put()
+                    message.body = email_helper.LIST_MESSAGE.format(' '.join(keywords))
+
         elif subject.startswith('list'):
             if person == None: # Check whether it exists or not.
                 message.body = email_helper.HELP_MESSAGE
