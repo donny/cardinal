@@ -14,5 +14,7 @@ handlers:
   script: email_handler.app
 - url: /fetch
   script: fetch.app
+- url: /notify
+  script: notify.app
 - url: /.*
   script: main.app
