@@ -29,11 +29,17 @@ class Notify(webapp2.RequestHandler):
                 new_deal.put()
 
             for email, deals in new_emails.iteritems():
+                deals_text = ''
+                for deal in deals:
+                    deals_text += deal.link + ' : ' + deal.title + '\n'
                 message = mail.EmailMessage(subject='New Deals',
                                             sender=email_helper.SENDER)
                 message.to = email
-                message.body = email_helper.NEW_DEALS_MESSAGE.format(deals)
+                message.body = email_helper.NEW_DEALS_MESSAGE.format(
+                    deals_text)
                 message.send()
+                logging.info("Email with " + len(deals) +
+                             " new deals sent to " + email)
 
             self.response.write('OK')
         except urlfetch.Error:
