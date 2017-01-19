@@ -15,36 +15,32 @@ class Notify(webapp2.RequestHandler):
 
         new_emails = {}
 
-        try:
-            for person in people:
-                for new_deal in new_deals:
-                    intersect = set(new_deal.keywords) & set(person.keywords)
-                    if len(intersect) != 0:
-                        if person.email not in new_emails:
-                            new_emails[person.email] = []
-                        new_emails[person.email].append(new_deal)
-
+        for person in people:
             for new_deal in new_deals:
-                new_deal.new = False
-                new_deal.put()
+                intersect = set(new_deal.keywords) & set(person.keywords)
+                if len(intersect) != 0:
+                    if person.email not in new_emails:
+                        new_emails[person.email] = []
+                    new_emails[person.email].append(new_deal)
 
-            for email, deals in new_emails.iteritems():
-                deals_text = ''
-                for deal in deals:
-                    deals_text += deal.link + ' : ' + deal.title + '\n'
-                message = mail.EmailMessage(subject='New Deals',
-                                            sender=email_helper.SENDER)
-                message.to = email
-                message.body = email_helper.NEW_DEALS_MESSAGE.format(
-                    deals_text)
-                message.send()
-                logging.info("Email with " + len(deals) +
-                             " new deals sent to " + email)
+        for new_deal in new_deals:
+            new_deal.new = False
+            new_deal.put()
 
-            self.response.write('OK')
-        except urlfetch.Error:
-            logging.exception('Caught exception fetching data')
-            self.response.write('EXCEPTION')
+        for email, deals in new_emails.iteritems():
+            deals_text = ''
+            for deal in deals:
+                deals_text += deal.link + ' : ' + deal.title + '\n'
+            message = mail.EmailMessage(subject='New Deals',
+                                        sender=email_helper.SENDER)
+            message.to = email
+            message.body = email_helper.NEW_DEALS_MESSAGE.format(
+                deals_text)
+            message.send()
+            logging.info("Email with " + len(deals) +
+                         " new deals sent to " + email)
+
+        self.response.write('OK')
 
 app = webapp2.WSGIApplication([
     ('/notify', Notify),
