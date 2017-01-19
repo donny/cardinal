@@ -37,7 +37,7 @@ class Notify(webapp2.RequestHandler):
             message.body = email_helper.NEW_DEALS_MESSAGE.format(
                 deals_text)
             message.send()
-            logging.info("Email with " + len(deals) +
+            logging.info("Email with " + str(len(deals)) +
                          " new deals sent to " + email)
 
         self.response.write('OK')
