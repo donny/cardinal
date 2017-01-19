@@ -4,8 +4,11 @@ HELP_MESSAGE = """Dear user,
 
 Send an email to {} with any of the following subject line:
 
-"help"
-"subscribe"
+"help" to get the list of valid email commands.
+"subscribe" followed by space-delimited keywords to subscribe to.
+"unsubscribe" followed by space-delimited keywords to unsubscribe to.
+"list" to get the list of subscribed keywords.
+"remove" to cancel the email notifications.
 
 Thanks
 """.format(SENDER)
