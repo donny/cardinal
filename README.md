@@ -12,7 +12,17 @@ I used Google App Engine (GAE) in the past,  around seven years ago, in [several
 
 Cardinal retrieves the new submissions periodically at intervals, checks for matching keywords, and emails users according to their matched keywords.
 
-The main user interface to Cardinal is through email. Specifically, a user sends emails with specific subject lines to a predefined Cardinal email address.
+The main user interface to Cardinal is through email. Specifically, a user sends emails with specific subject lines to a predefined Cardinal email address. This is something similar to how a user [interacts](http://www.list.org/mailman-member/node10.html) with [GNU Mailman](http://www.list.org/mailman-member/node41.html) system. Valid subject lines are:
+
+- "help" to get the list of valid email commands.
+- "subscribe" followed by space-delimited keywords to subscribe to.
+- "unsubscribe" followed by space-delimited keywords to unsubscribe to.
+- "list" to get the list of subscribed keywords.
+- "remove" to cancel the email notifications.
+
+For example, after I've sent an email with the following subject line: `subscribe coffee ios` to Cardinal, and when there are new deals, I would receive the following email:
+
+![Screenshot](https://raw.githubusercontent.com/donny/cardinal/master/screenshot.png)
 
 ### Implementation
 
