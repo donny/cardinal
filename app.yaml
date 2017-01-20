@@ -16,5 +16,7 @@ handlers:
   script: fetch.app
 - url: /notify
   script: notify.app
+- url: /clean
+  script: clean.app
 - url: /.*
   script: main.app
