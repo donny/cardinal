@@ -29,7 +29,7 @@ For example, after I've sent an email with the following subject line: `subscrib
 The app is implemented by three main classes:
 
 - [`email_handler.py`](https://github.com/donny/cardinal/blob/master/email_handler.py) that handles incoming email requests from users. It saves users' information in Google Cloud Datastore.
-- [`fetch.py`](https://github.com/donny/cardinal/blob/master/fetch.py) is invoked by a GAE cron job service every two hours to retrieve new OzBargain deals, process them, and save them in Google Cloud Datastore.
+- [`fetch.py`](https://github.com/donny/cardinal/blob/master/fetch.py) is invoked by a GAE cron job service every hour to retrieve new OzBargain deals, process them, and save them in Google Cloud Datastore.
 - [`notify.py`](https://github.com/donny/cardinal/blob/master/notify.py) is also invoked by a GAE cron job service to get registered users and new deals; find matching keywords; and send email notifications.
 
 We use Python set operations (e.g. `intersection()`) to find matching keywords between deals and users:
@@ -50,3 +50,5 @@ Please note that before running or deploying this application, install the depen
     pip install -t lib -r requirements.txt
 
 ### Conclusion
+
+I think Google App Engine (and other PaaS in general) has matured quite a lot. Services are nicely separated now. If I remember correctly, the database service was part of GAE in the past, but now it has been decoupled and become the new Google Cloud Datastore. Yet, it's very easy to use Cloud Datastore from GAE. I like the Google Cloud Platform web interface, I feel that it is cleaner and easier to use compared to Amazon Web Services UI. And I can't wait to use higher-level services like [Cloud Translation API](https://cloud.google.com/translate/) and [Cloud Vision API](https://cloud.google.com/vision/) in other projects.
