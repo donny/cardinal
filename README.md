@@ -26,12 +26,27 @@ For example, after I've sent an email with the following subject line: `subscrib
 
 ### Implementation
 
-### Conclusion
+The app is implemented by three main classes:
 
+- [`email_handler.py`](https://github.com/donny/cardinal/blob/master/email_handler.py) that handles incoming email requests from users. It saves users' information in Google Cloud Datastore.
+- [`fetch.py`](https://github.com/donny/cardinal/blob/master/fetch.py) is invoked by a GAE cron job service every two hours to retrieve new OzBargain deals, process them, and save them in Google Cloud Datastore.
+- [`notify.py`](https://github.com/donny/cardinal/blob/master/notify.py) is also invoked by a GAE cron job service to get registered users and new deals; find matching keywords; and send email notifications.
 
-Before running or deploying this application, install the dependencies using
+We use Python set operations (e.g. `intersection()`) to find matching keywords between deals and users:
+
+```python
+for person in people:
+    for new_deal in new_deals:
+        intersect = set(new_deal.keywords) & set(person.keywords)
+        if len(intersect) != 0:
+            if person.email not in new_emails:
+                new_emails[person.email] = []
+            new_emails[person.email].append(new_deal)
+```
+
+Please note that before running or deploying this application, install the dependencies using
 [pip](http://pip.readthedocs.io/en/stable/):
 
     pip install -t lib -r requirements.txt
 
-For more information, see the [App Engine Standard README](../../README.md)
+### Conclusion
